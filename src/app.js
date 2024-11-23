@@ -1,5 +1,3 @@
-// require("./utils/docGenerator");
-
 var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
@@ -9,7 +7,6 @@ const cors = require("cors");
 var logger = require("morgan");
 const swaggerUi = require("swagger-ui-express");
 const swaggerFile = require("../documentation/swagger-doc.json");
-
 //import routes
 const userRouter = require("./routes/userRouter");
 const selectTherapyRouter = require("./routes/SelectTherapyRouter");
@@ -118,9 +115,6 @@ app.use(function (err, req, res, next) {
   res.status(500).json({ message: err.message });
 });
 
-var server = app.listen(process.env.PORT || 3000, function () {
-  console.log("Express server listening on port " + server.address().port);
-});
-console.log("********");
+
 
 module.exports = app;
