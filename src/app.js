@@ -121,6 +121,6 @@ app.use(function (err, req, res, next) {
 var server = app.listen(process.env.PORT || 3000, function () {
   console.log("Express server listening on port " + server.address().port);
 });
-
+console.log("********");
 
 module.exports = app;
