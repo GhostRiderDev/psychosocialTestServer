@@ -2,16 +2,759 @@
   "swagger": "2.0",
   "info": {
     "version": "1.0.0",
-    "title": "REST API",
-    "description": ""
+    "title": "Psychosocial App API",
+    "description": "API Documentation for Psychosocial test App"
   },
   "host": "localhost:3000",
   "basePath": "/",
+  "tags": [
+    {
+      "name": "Answer",
+      "description": "Endpoints relacionados con respuestas"
+    },
+    {
+      "name": "Appointment",
+      "description": "Endpoints relacionados con citas"
+    },
+    {
+      "name": "Message",
+      "description": "Endpoints relacionados con mensajes"
+    },
+    {
+      "name": "MultipleUpload",
+      "description": "Endpoints relacionados con múltiples subidas"
+    },
+    {
+      "name": "Notification",
+      "description": "Endpoints relacionados con notificaciones"
+    },
+    {
+      "name": "Package",
+      "description": "Endpoints relacionados con paquetes"
+    },
+    {
+      "name": "Rating",
+      "description": "Endpoints relacionados con calificaciones"
+    },
+    {
+      "name": "SelectTherapy",
+      "description": "Endpoints relacionados con selección de terapia"
+    },
+    {
+      "name": "Servey",
+      "description": "Endpoints relacionados con encuestas"
+    },
+    {
+      "name": "Sheidule",
+      "description": "Endpoints relacionados con horarios"
+    },
+    {
+      "name": "SubscriptionPlan",
+      "description": "Endpoints relacionados con planes de suscripción"
+    },
+    {
+      "name": "Therapist",
+      "description": "Endpoints relacionados con terapeutas"
+    },
+    {
+      "name": "TimeSceidule",
+      "description": "Endpoints relacionados con horarios de tiempo"
+    },
+    {
+      "name": "User",
+      "description": "Endpoints relacionados con usuarios"
+    }
+  ],
   "schemes": [
-    "http"
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json",
+    "multipart/form-data"
+  ],
+  "produces": [
+    "application/json"
   ],
   "paths": {
-    "/": {
+    "/api/test": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/user/sign-up": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "",
+        "operationId": "signUp",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                },
+                "countryCode": {
+                  "example": "any"
+                },
+                "phone": {
+                  "example": "any"
+                },
+                "dateOfBirth": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "User registered successfully",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/user/sign-in": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "",
+        "operationId": "signIn",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "User signed in successfully",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/api/v1/user/profile": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "",
+        "operationId": "profile",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User found",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/user/forgot-password": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "",
+        "operationId": "forgotPassword",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Verification code sent to email"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/user/verify-code": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "",
+        "operationId": "verifyCode",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "code": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User verified successfully"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/user/set-password": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "",
+        "operationId": "setPassword",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Password changed successfully"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/user/change-password": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "",
+        "operationId": "changePassword",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "example": "any"
+                },
+                "userRole": {
+                  "example": "any"
+                },
+                "oldPassword": {
+                  "example": "any"
+                },
+                "newPassword": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Password changed successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/user/update": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "",
+        "operationId": "updateProfile",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "example": "any"
+                },
+                "userRole": {
+                  "example": "any"
+                },
+                "name": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                },
+                "phone": {
+                  "example": "any"
+                },
+                "dateOfBirth": {
+                  "example": "any"
+                },
+                "countryCode": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile updated successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/user/totall-patients": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "",
+        "operationId": "totalPatients",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "description": "Page number",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "description": "Number of items per page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "search",
+            "description": "Search query",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Patients count retrieved successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/user/patients-all": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "",
+        "operationId": "patients",
+        "responses": {
+          "200": {
+            "description": "Patients retrieved successfully"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/user/patient/{patientId}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "",
+        "operationId": "singlePatients",
+        "parameters": [
+          {
+            "name": "patientId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Patient ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Patient found successfully"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/user/{userId}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "",
+        "operationId": "singleUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "User ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User retrieved successfully"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/user/assigned/list/{therapistId}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "",
+        "operationId": "assignedList",
+        "parameters": [
+          {
+            "name": "therapistId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Therapist ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Assigned therapist list and patient"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/user/top/therapist": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "",
+        "operationId": "topTherapist",
+        "responses": {
+          "200": {
+            "description": "Top rated therapist"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/user/total/users": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "",
+        "operationId": "totalUsers",
+        "responses": {
+          "200": {
+            "description": "User count retrieved successfully"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/therapy/choose": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "therapyName": {
+                  "example": "any"
+                },
+                "theapyName": {
+                  "example": "any"
+                },
+                "patientId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/servey/add": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "question": {
+                  "example": "any"
+                },
+                "options": {
+                  "example": "any"
+                },
+                "questionType": {
+                  "example": "any"
+                },
+                "answerType": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/servey/all": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "questionType",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/servey/answers": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/servey/provide-answer": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/package/add": {
       "post": {
         "description": "",
         "parameters": [
@@ -31,55 +774,44 @@
                 },
                 "userRole": {
                   "example": "any"
+                },
+                "name": {
+                  "example": "any"
+                },
+                "price": {
+                  "example": "any"
+                },
+                "description": {
+                  "example": "any"
                 }
               }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
+          "201": {
+            "description": "Created"
           },
           "401": {
             "description": "Unauthorized"
           },
           "403": {
             "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
           }
         }
       }
     },
-    "/answered-by-user/{userId}": {
+    "/api/v1/package/all": {
       "get": {
         "description": "",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
           }
         }
       }
     },
-    "/select": {
+    "/api/v1/package/select": {
       "post": {
         "description": "",
         "parameters": [
@@ -129,7 +861,57 @@
         }
       }
     },
-    "/assign/{userId}": {
+    "/api/v1/apointment/select": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "example": "any"
+                },
+                "userRole": {
+                  "example": "any"
+                },
+                "packageId": {
+                  "example": "any"
+                },
+                "date": {
+                  "example": "any"
+                },
+                "time": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/apointment/assign/{userId}": {
       "post": {
         "description": "",
         "parameters": [
@@ -165,7 +947,7 @@
         }
       }
     },
-    "/my-apointment": {
+    "/api/v1/apointment/my-apointment": {
       "get": {
         "description": "",
         "parameters": [
@@ -191,7 +973,7 @@
         }
       }
     },
-    "/my-apointment-history": {
+    "/api/v1/apointment/my-apointment-history": {
       "get": {
         "description": "",
         "parameters": [
@@ -238,80 +1020,7 @@
         }
       }
     },
-    "/chat/{participant}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "participant",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/chat-list": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/file": {
+    "/api/v1/therapist/apply": {
       "post": {
         "description": "",
         "parameters": [
@@ -321,16 +1030,25 @@
             "schema": {
               "type": "object",
               "properties": {
-                "senderId": {
+                "name": {
                   "example": "any"
                 },
-                "participant": {
+                "email": {
                   "example": "any"
                 },
-                "message": {
+                "password": {
                   "example": "any"
                 },
-                "messageType": {
+                "therapistType": {
+                  "example": "any"
+                },
+                "dateOfBirth": {
+                  "example": "any"
+                },
+                "phone": {
+                  "example": "any"
+                },
+                "countryCode": {
                   "example": "any"
                 }
               }
@@ -338,8 +1056,11 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "500": {
             "description": "Internal Server Error"
@@ -347,40 +1068,7 @@
         }
       }
     },
-    "/meow": {
-      "post": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/mewo/mewow": {
-      "post": {
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/send": {
-      "post": {
-        "description": "",
-        "responses": {
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/all": {
+    "/api/v1/therapist/therapist-profile": {
       "get": {
         "description": "",
         "parameters": [
@@ -388,24 +1076,11 @@
             "name": "authorization",
             "in": "header",
             "type": "string"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "type": "string"
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
           },
           "401": {
             "description": "Unauthorized"
@@ -422,49 +1097,7 @@
         }
       }
     },
-    "/add": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "question": {
-                  "example": "any"
-                },
-                "options": {
-                  "example": "any"
-                },
-                "questionType": {
-                  "example": "any"
-                },
-                "answerType": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/create/{therapistId}": {
+    "/api/v1/therapist/action/{therapistId}": {
       "post": {
         "description": "",
         "parameters": [
@@ -491,7 +1124,7 @@
                 "userRole": {
                   "example": "any"
                 },
-                "rating": {
+                "actionType": {
                   "example": "any"
                 }
               }
@@ -499,8 +1132,11 @@
           }
         ],
         "responses": {
-          "201": {
-            "description": "Created"
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "401": {
             "description": "Unauthorized"
@@ -517,7 +1153,85 @@
         }
       }
     },
-    "/choose": {
+    "/api/v1/therapist/all": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/therapist/{therapistId}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "therapistId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/therapist/sign-in": {
       "post": {
         "description": "",
         "parameters": [
@@ -527,13 +1241,10 @@
             "schema": {
               "type": "object",
               "properties": {
-                "therapyName": {
+                "email": {
                   "example": "any"
                 },
-                "theapyName": {
-                  "example": "any"
-                },
-                "patientId": {
+                "password": {
                   "example": "any"
                 }
               }
@@ -544,13 +1255,81 @@
           "200": {
             "description": "OK"
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/therapist/update": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "example": "any"
+                },
+                "userRole": {
+                  "example": "any"
+                },
+                "name": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                },
+                "therapistType": {
+                  "example": "any"
+                },
+                "dateOfBirth": {
+                  "example": "any"
+                },
+                "phone": {
+                  "example": "any"
+                },
+                "countryCode": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
           "500": {
             "description": "Internal Server Error"
           }
         }
       }
     },
-    "/answers": {
+    "/api/v1/therapist/welcome-message/default": {
       "get": {
         "description": "",
         "responses": {
@@ -563,20 +1342,35 @@
         }
       }
     },
-    "/provide-answer": {
+    "/api/v1/therapist/applied/therapist": {
       "get": {
         "description": "",
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
           }
         }
       }
     },
-    "/make": {
+    "/api/v1/therapist/payment/count/{therspistId}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "therspistId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/sheidule/make": {
       "post": {
         "description": "",
         "parameters": [
@@ -626,7 +1420,7 @@
         }
       }
     },
-    "/all/{therapistId}/{date}": {
+    "/api/v1/sheidule/all/{therapistId}/{date}": {
       "get": {
         "description": "",
         "parameters": [
@@ -679,7 +1473,7 @@
         }
       }
     },
-    "/match": {
+    "/api/v1/sheidule/match": {
       "post": {
         "description": "",
         "parameters": [
@@ -726,7 +1520,7 @@
         }
       }
     },
-    "/assign/{therapistId}": {
+    "/api/v1/sheidule/assign/{therapistId}": {
       "post": {
         "description": "",
         "parameters": [
@@ -782,7 +1576,7 @@
         }
       }
     },
-    "/apointment/details": {
+    "/api/v1/sheidule/apointment/details": {
       "get": {
         "description": "",
         "parameters": [
@@ -811,20 +1605,28 @@
         }
       }
     },
-    "/create": {
+    "/api/v1/sheidule/create": {
       "post": {
         "description": "",
         "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
             "schema": {
               "type": "object",
               "properties": {
-                "sheidule": {
+                "userId": {
                   "example": "any"
                 },
-                "name": {
+                "userRole": {
+                  "example": "any"
+                },
+                "sheidule": {
                   "example": "any"
                 }
               }
@@ -850,7 +1652,7 @@
         }
       }
     },
-    "/book/{scheduleId}": {
+    "/api/v1/sheidule/book/{scheduleId}": {
       "post": {
         "description": "",
         "parameters": [
@@ -903,7 +1705,7 @@
         }
       }
     },
-    "/therapist/{date}": {
+    "/api/v1/sheidule/therapist/{date}": {
       "get": {
         "description": "",
         "parameters": [
@@ -935,7 +1737,7 @@
         }
       }
     },
-    "/completed-session": {
+    "/api/v1/sheidule/completed-session": {
       "get": {
         "description": "",
         "parameters": [
@@ -961,7 +1763,7 @@
         }
       }
     },
-    "/check-scheidule/{therapistId}": {
+    "/api/v1/sheidule/check-scheidule/{therapistId}": {
       "post": {
         "description": "",
         "parameters": [
@@ -1011,7 +1813,7 @@
         }
       }
     },
-    "/session-completed/{scheduleId}": {
+    "/api/v1/sheidule/session-completed/{scheduleId}": {
       "post": {
         "description": "",
         "parameters": [
@@ -1050,7 +1852,7 @@
         }
       }
     },
-    "/session-completed/pay": {
+    "/api/v1/sheidule/session-completed/pay": {
       "get": {
         "description": "",
         "responses": {
@@ -1063,7 +1865,7 @@
         }
       }
     },
-    "/recent/session": {
+    "/api/v1/sheidule/recent/session": {
       "get": {
         "description": "",
         "parameters": [
@@ -1083,7 +1885,7 @@
         }
       }
     },
-    "/all/appointment": {
+    "/api/v1/sheidule/all/appointment": {
       "get": {
         "description": "",
         "responses": {
@@ -1096,7 +1898,105 @@
         }
       }
     },
-    "/create-plan": {
+    "/api/v1/time-sheidule/create": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sheidule": {
+                  "example": "any"
+                },
+                "name": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/answer/": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "example": "any"
+                },
+                "userRole": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/answer/answered-by-user/{userId}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/subscription/create-plan": {
       "post": {
         "description": "",
         "parameters": [
@@ -1138,7 +2038,7 @@
         }
       }
     },
-    "/get-plan": {
+    "/api/v1/subscription/get-plan": {
       "get": {
         "description": "",
         "parameters": [
@@ -1158,7 +2058,7 @@
         }
       }
     },
-    "/buy-plan/{planId}": {
+    "/api/v1/subscription/buy-plan/{planId}": {
       "post": {
         "description": "",
         "parameters": [
@@ -1217,7 +2117,80 @@
         }
       }
     },
-    "/apply": {
+    "/api/v1/message/chat/{participant}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "participant",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/message/chat-list": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/message/file": {
       "post": {
         "description": "",
         "parameters": [
@@ -1227,25 +2200,60 @@
             "schema": {
               "type": "object",
               "properties": {
-                "name": {
+                "senderId": {
                   "example": "any"
                 },
-                "email": {
+                "participant": {
                   "example": "any"
                 },
-                "password": {
+                "message": {
                   "example": "any"
                 },
-                "therapistType": {
+                "messageType": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/rating/create/{therapistId}": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "therapistId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
                   "example": "any"
                 },
-                "dateOfBirth": {
+                "userRole": {
                   "example": "any"
                 },
-                "phone": {
-                  "example": "any"
-                },
-                "countryCode": {
+                "rating": {
                   "example": "any"
                 }
               }
@@ -1256,29 +2264,6 @@
           "201": {
             "description": "Created"
           },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/therapist-profile": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
           "401": {
             "description": "Unauthorized"
           },
@@ -1294,38 +2279,24 @@
         }
       }
     },
-    "/action/{therapistId}": {
+    "/api/v1/notification/send": {
       "post": {
         "description": "",
+        "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/notification/all": {
+      "get": {
+        "description": "",
         "parameters": [
-          {
-            "name": "therapistId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "authorization",
             "in": "header",
             "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "userId": {
-                  "example": "any"
-                },
-                "userRole": {
-                  "example": "any"
-                },
-                "actionType": {
-                  "example": "any"
-                }
-              }
-            }
           }
         ],
         "responses": {
@@ -1350,543 +2321,25 @@
         }
       }
     },
-    "/{therapistId}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "therapistId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/sign-in": {
+    "/api/v1/meowimage/meow": {
       "post": {
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"
           },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
     },
-    "/update": {
+    "/api/v1/meowimage/mewo/mewow": {
       "post": {
         "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "userId": {
-                  "example": "any"
-                },
-                "userRole": {
-                  "example": "any"
-                },
-                "name": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                },
-                "phone": {
-                  "example": "any"
-                },
-                "dateOfBirth": {
-                  "example": "any"
-                },
-                "countryCode": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/welcome-message/default": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/applied/therapist": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/payment/count/{therspistId}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "therspistId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/sign-up": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                },
-                "countryCode": {
-                  "example": "any"
-                },
-                "phone": {
-                  "example": "any"
-                },
-                "dateOfBirth": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/profile": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/forgot-password": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/verify-code": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "example": "any"
-                },
-                "code": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/set-password": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/change-password": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "userId": {
-                  "example": "any"
-                },
-                "userRole": {
-                  "example": "any"
-                },
-                "oldPassword": {
-                  "example": "any"
-                },
-                "newPassword": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/totall-patients": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/patients-all": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/patient/{patientId}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "patientId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/{userId}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/assigned/list/{therapistId}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "therapistId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/top/therapist": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/total/users": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }

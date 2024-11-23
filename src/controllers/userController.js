@@ -18,8 +18,6 @@ const pagination = require("../helpers/pagination");
 const { createChat, saveMessage } = require("./messageController");
 const { therapistPayment } = require("./sheiduleController");
 
-// const { validationResult } = require('express-validator'); // For input validation
-
 const signUp = async (req, res) => {
   try {
     const { name, email, password, countryCode, phone, dateOfBirth } = req.body;
@@ -89,6 +87,7 @@ const signUp = async (req, res) => {
     };
     const message = await saveMessage(msg);
     // const message = "Hi! I am an in-house therapist from Mingaze. We will assign a Therapist to you very soon."
+    console.error("io**************** ", io);
     io.emit(`new::${newChat._id}`, message);
 
     // Send response
@@ -99,6 +98,16 @@ const signUp = async (req, res) => {
     console.error("Error in signUp controller:", error);
     res.status(500).json({ error: "Server error" });
   }
+  /*#swagger.tags = ['User']
+    ##swagger.operationId = 'signUp'
+    #swagger.responses[201] = {
+        description: 'User registered successfully',
+        schema: { $ref: '#/definitions/User' }
+    }
+    #swagger.responses[400] = {
+        description: 'Bad request'
+    }
+    */
 };
 
 const signIn = async (req, res, next) => {
@@ -180,6 +189,19 @@ const signIn = async (req, res, next) => {
       })
     );
   }
+  /*#swagger.tags = ['User']
+    ##swagger.operationId = 'signIn'
+    #swagger.responses[201] = {
+        description: 'User signed in successfully',
+        schema: { $ref: '#/definitions/User' }
+    }
+    #swagger.responses[404] = {
+        description: 'User not found'
+    }
+    #swagger.responses[401] = {
+        description: 'Unauthorized'
+    }
+    */
 };
 
 const profile = async (req, res) => {
@@ -212,6 +234,19 @@ const profile = async (req, res) => {
       })
     );
   }
+  /*#swagger.tags = ['User']
+    ##swagger.operationId = 'profile'
+    #swagger.responses[200] = {
+        description: 'User found',
+        schema: { $ref: '#/definitions/User' }
+    }
+    #swagger.responses[404] = {
+        description: 'User not found'
+    }
+    #swagger.responses[500] = {
+        description: 'Internal server error'
+    }
+    */
 };
 
 const forgotPassword = async (req, res) => {
@@ -247,6 +282,18 @@ const forgotPassword = async (req, res) => {
       })
     );
   }
+  /*#swagger.tags = ['User']
+    ##swagger.operationId = 'forgotPassword'
+    #swagger.responses[200] = {
+        description: 'Verification code sent to email'
+    }
+    #swagger.responses[404] = {
+        description: 'User not found'
+    }
+    #swagger.responses[500] = {
+        description: 'Internal server error'
+    }
+    */
 };
 
 //verify code
@@ -327,6 +374,18 @@ const verifyCode = async (req, res) => {
       })
     );
   }
+  /*#swagger.tags = ['User']
+    ##swagger.operationId = 'verifyCode'
+    #swagger.responses[200] = {
+        description: 'User verified successfully'
+    }
+    #swagger.responses[404] = {
+        description: 'User not found'
+    }
+    #swagger.responses[500] = {
+        description: 'Internal server error'
+    }
+    */
 };
 
 //Set password
@@ -386,6 +445,18 @@ const setPassword = async (req, res) => {
       })
     );
   }
+  /*#swagger.tags = ['User']
+    ##swagger.operationId = 'setPassword'
+    #swagger.responses[200] = {
+        description: 'Password changed successfully'
+    }
+    #swagger.responses[404] = {
+        description: 'User not found'
+    }
+    #swagger.responses[500] = {
+        description: 'Internal server error'
+    }
+    */
 };
 
 const changePassword = async (req, res) => {
@@ -427,6 +498,18 @@ const changePassword = async (req, res) => {
     console.error(error);
     return res.status(500).json(Response({ message: "Internal server error" }));
   }
+  /*#swagger.tags = ['User']
+    ##swagger.operationId = 'changePassword'
+    #swagger.responses[200] = {
+        description: 'Password changed successfully'
+    }
+    #swagger.responses[400] = {
+        description: 'Bad request'
+    }
+    #swagger.responses[500] = {
+        description: 'Internal server error'
+    }
+    */
 };
 
 const updateProfile = async (req, res) => {
@@ -506,6 +589,18 @@ const updateProfile = async (req, res) => {
     // For other errors, return a generic internal server error message
     return res.status(500).json({ message: "Internal server error" });
   }
+  /*#swagger.tags = ['User']
+    ##swagger.operationId = 'updateProfile'
+    #swagger.responses[200] = {
+        description: 'Profile updated successfully'
+    }
+    #swagger.responses[400] = {
+        description: 'Bad request'
+    }
+    #swagger.responses[500] = {
+        description: 'Internal server error'
+    }
+    */
 };
 
 const totalPatients = async (req, res) => {
@@ -553,6 +648,20 @@ const totalPatients = async (req, res) => {
     console.log(error.message);
     res.status(500).json(Response({ message: "Internal server Error" }));
   }
+  /*#swagger.tags = ['User']
+    ##swagger.operationId = 'totalPatients'
+    #swagger.parameters['page'] = { description: 'Page number' }
+    #swagger.parameters['limit'] = { description: 'Number of items per page' }
+    #swagger.parameters['search'] = { description: 'Search query' }
+
+    
+    #swagger.responses[200] = {
+        description: 'Patients count retrieved successfully'
+    }
+    #swagger.responses[500] = {
+        description: 'Internal server error'
+    }
+    */
 };
 
 const patients = async (req, res) => {
@@ -574,6 +683,15 @@ const patients = async (req, res) => {
   } catch (error) {
     res.status(500).json(Response({ message: "Internal server Error" }));
   }
+  /*#swagger.tags = ['User']
+    ##swagger.operationId = 'patients'
+    #swagger.responses[200] = {
+        description: 'Patients retrieved successfully'
+    }
+    #swagger.responses[500] = {
+        description: 'Internal server error'
+    }
+    */
 };
 
 const singlePatients = async (req, res) => {
@@ -592,6 +710,16 @@ const singlePatients = async (req, res) => {
   } catch (error) {
     res.status(500).json(Response({ message: "Internal server error" }));
   }
+  /*#swagger.tags = ['User']
+    ##swagger.operationId = 'singlePatients'
+    #swagger.parameters['patientId'] = { description: 'Patient ID' }
+    #swagger.responses[200] = {
+        description: 'Patient found successfully'
+    }
+    #swagger.responses[500] = {
+        description: 'Internal server error'
+    }
+    */
 };
 
 const singleUser = async (req, res) => {
@@ -610,6 +738,16 @@ const singleUser = async (req, res) => {
   } catch (error) {
     res.status(500).json(Response({ message: "Internal server Error" }));
   }
+  /*#swagger.tags = ['User']
+    ##swagger.operationId = 'singleUser'
+    #swagger.parameters['userId'] = { description: 'User ID' }
+    #swagger.responses[200] = {
+        description: 'User retrieved successfully'
+    }
+    #swagger.responses[500] = {
+        description: 'Internal server error'
+    }
+  */
 };
 
 const assignedList = async (req, res) => {
@@ -631,6 +769,16 @@ const assignedList = async (req, res) => {
   } catch (error) {
     res.status(400).json(Response({ message: "Internal server Error" }));
   }
+  /*#swagger.tags = ['User']
+    ##swagger.operationId = 'assignedList'
+    #swagger.parameters['therapistId'] = { description: 'Therapist ID' }
+    #swagger.responses[200] = {
+        description: 'Assigned therapist list and patient'
+    }
+    #swagger.responses[500] = {
+        description: 'Internal server error'
+    }
+    */
 };
 
 const topTherapist = async (req, res) => {
@@ -651,10 +799,18 @@ const topTherapist = async (req, res) => {
     console.log(error.message);
     res.status(500).json({ message: "Internal server error" });
   }
+  /*#swagger.tags = ['User']	
+    #swagger.operationId = 'topTherapist'
+    #swagger.responses[200] = {
+        description: 'Top rated therapist'
+    }
+    #swagger.responses[500] = {
+        description: 'Internal server error'
+    }
+    */
 };
 
 const totalUsers = async (req, res) => {
-  console.log("mewo");
   try {
     const totalUsers = await User.countDocuments();
     const totalTherapist = await Therapist.countDocuments();
@@ -674,6 +830,15 @@ const totalUsers = async (req, res) => {
   } catch {
     res.status(500).json("Internal server error");
   }
+  /*#swagger.tags = ['User']
+    ##swagger.operationId = 'totalUsers'
+    #swagger.responses[200] = {
+        description: 'User count retrieved successfully'
+    }
+    #swagger.responses[500] = {
+        description: 'Internal server error'
+    }
+    */
 };
 
 module.exports = {

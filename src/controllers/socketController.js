@@ -1,8 +1,3 @@
-const { createServer } = require("node:http");
-const { Server } = require("socket.io");
-
-const app = require("../app");
-const { connectToDatabase } = require("../helpers/connection");
 const {
   getCurrentTime,
   saveMessage,
@@ -10,17 +5,6 @@ const {
 } = require("./messageController");
 const Chat = require("../models/Chat");
 const Response = require("../helpers/response");
-
-const server = createServer(app);
-
-const io = new Server(server, {
-  cors: {
-    origin: "*",
-  },
-});
-
-// Connect to the MongoDB database
-connectToDatabase();
 
 function socketIO(io) {
   console.log("ujhhj", io);
@@ -78,9 +62,7 @@ function socketIO(io) {
   });
 }
 
-socketIO(io);
-
-module.exports = socketIO;
+module.exports = { socketIO };
 
 // socket.on('message', async (msg, callback) => {
 //     try {
