@@ -37,7 +37,7 @@ swaggerAutogen(outputFile, endpointFile, {
     { name: "Servey", description: "Endpoints relacionados con encuestas" },
     { name: "Sheidule", description: "Endpoints relacionados con horarios" },
     {
-      name: "SubscriptionPlan",
+      name: "Subscription",
       description: "Endpoints relacionados con planes de suscripción",
     },
     { name: "Therapist", description: "Endpoints relacionados con terapeutas" },

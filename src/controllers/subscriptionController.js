@@ -15,28 +15,27 @@ const createSubscription = async (req, res) => {
       sessionCount,
       planType,
     });
-    res
-      .status(201)
-      .json(
-        Response({
-          message: "Subscription plan created successfully",
-          status: "Created",
-          statusCode: 201,
-          data: sunbcriptionPlan,
-        })
-      );
+    res.status(201).json(
+      Response({
+        message: "Subscription plan created successfully",
+        status: "Created",
+        statusCode: 201,
+        data: sunbcriptionPlan,
+      })
+    );
   } catch (error) {
     console.log(error.message);
-    res
-      .status(500)
-      .json(
-        Response({
-          message: "Error creating plan",
-          status: "Error",
-          stausCode: 500,
-        })
-      );
+    res.status(500).json(
+      Response({
+        message: "Error creating plan",
+        status: "Error",
+        stausCode: 500,
+      })
+    );
   }
+  /*#swagger.tags = ['Subscription']
+    #swagger.description = 'Endpoint to create subscription plan'
+    } */
 };
 
 const getSubscription = async (req, res) => {
@@ -65,6 +64,9 @@ const getSubscription = async (req, res) => {
       statusCode: 500,
     });
   }
+  /*#swagger.tags = ['Subscription']
+    #swagger.description = 'Endpoint to get subscription plans'
+    } */
 };
 
 const updateSubscription = async (req, res) => {
@@ -75,27 +77,26 @@ const updateSubscription = async (req, res) => {
       req.params.id,
       { title, price, duration, description }
     );
-    res
-      .status(200)
-      .json(
-        Response({
-          message: "Subscription plan updated successfully",
-          status: "Success",
-          stausCode: 200,
-          data: suncriptionPlan,
-        })
-      );
+    res.status(200).json(
+      Response({
+        message: "Subscription plan updated successfully",
+        status: "Success",
+        stausCode: 200,
+        data: suncriptionPlan,
+      })
+    );
   } catch (error) {
-    res
-      .status(500)
-      .json(
-        Response({
-          message: "Error updating plan",
-          status: "Error",
-          stausCode: 500,
-        })
-      );
+    res.status(500).json(
+      Response({
+        message: "Error updating plan",
+        status: "Error",
+        stausCode: 500,
+      })
+    );
   }
+  /*#swagger.tags = ['Subscription']
+    #swagger.description = 'Endpoint to update subscription plan'
+    } */
 };
 
 const deleteSubscription = async (req, res) => {
@@ -104,27 +105,26 @@ const deleteSubscription = async (req, res) => {
     const suncriptionPlan = await SubsCriptionPlan.findByIdAndDelete(
       req.params.id
     );
-    res
-      .status(200)
-      .json(
-        Response({
-          message: "Subscription plan deleted successfully",
-          status: "Success",
-          stausCode: 200,
-          data: suncriptionPlan,
-        })
-      );
+    res.status(200).json(
+      Response({
+        message: "Subscription plan deleted successfully",
+        status: "Success",
+        stausCode: 200,
+        data: suncriptionPlan,
+      })
+    );
   } catch (error) {
-    res
-      .status(500)
-      .json(
-        Response({
-          message: "Error deleting plan",
-          status: "Error",
-          stausCode: 500,
-        })
-      );
+    res.status(500).json(
+      Response({
+        message: "Error deleting plan",
+        status: "Error",
+        stausCode: 500,
+      })
+    );
   }
+  /*#swagger.tags = ['Subscription']
+    #swagger.description = 'Endpoint to delete subscription plan'
+    } */
 };
 
 //Buy subscription plan
@@ -139,15 +139,13 @@ const buySubscription = async (req, res) => {
     const subcriptionPlan = await SubsCriptionPlan.findById(planId);
     console.log(subcriptionPlan);
     if (!subcriptionPlan) {
-      return res
-        .status(404)
-        .json(
-          Response({
-            message: "Plan not found",
-            status: "Error",
-            stausCode: 404,
-          })
-        );
+      return res.status(404).json(
+        Response({
+          message: "Plan not found",
+          status: "Error",
+          stausCode: 404,
+        })
+      );
     }
     const checkSubscription = await Subscription.findOne({ userId: userId });
     if (checkSubscription) {
@@ -172,72 +170,33 @@ const buySubscription = async (req, res) => {
       transactionId: req.body.transactionId,
     });
 
-    res
-      .status(200)
-      .json(
-        Response({
-          message: "Subscription plan bought successfully",
-          status: "Success",
-          stausCode: 200,
-          data: subcriptionPlan,
-        })
-      );
+    res.status(200).json(
+      Response({
+        message: "Subscription plan bought successfully",
+        status: "Success",
+        stausCode: 200,
+        data: subcriptionPlan,
+      })
+    );
   } catch (error) {
     console.log(error.message);
-    res
-      .status(500)
-      .json(
-        Response({
-          message: "Error buying plan",
-          status: "Error",
-          stausCode: 500,
-        })
-      );
+    res.status(500).json(
+      Response({
+        message: "Error buying plan",
+        status: "Error",
+        stausCode: 500,
+      })
+    );
   }
-};
-
-const useSubcription = async (req, res) => {
-  console.log("useSubcription");
-  try {
-    const { planId, userId } = req.body;
-    const subscription = await Subscription.findOne({ planId, userId });
-    if (!subscription) {
-      res
-        .status(404)
-        .json(
-          Response({
-            message: "Subscription not found",
-            status: "Error",
-            stausCode: 404,
-          })
-        );
-    }
-    res
-      .status(200)
-      .json(
-        Response({
-          message: "Subscription plan used successfully",
-          status: "Success",
-          stausCode: 200,
-          data: suncriptionPlan,
-        })
-      );
-  } catch (error) {
-    console.log(error);
-    res
-      .status(500)
-      .json(
-        Response({
-          message: "Error using plan",
-          status: "Error",
-          stausCode: 500,
-        })
-      );
-  }
+  /*#swagger.tags = ['Subscription']
+    #swagger.description = 'Endpoint to buy subscription plan'
+    } */
 };
 
 module.exports = {
   createSubscription,
+  updateSubscription,
+  deleteSubscription,
   getSubscription,
   buySubscription,
 };

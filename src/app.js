@@ -49,9 +49,11 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
+// Servir archivos estáticos desde el directorio "public"
+app.use(express.static(path.join(__dirname, "../public")));
 
-app.use("/public", express.static(__dirname + "/public"));
+// Rutas
+app.use("/public", express.static(path.join(__dirname, "../public")));
 
 //Routes
 app.use("/api/v1/user", userRouter);
@@ -71,10 +73,10 @@ app.use("/api/v1/notification", notificationRouter);
 app.use("/api/v1/meowimage", multipleImageRouter);
 app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
-// test route
-app.get("/api/test", (req, res) => {
-  res.send("I am responding!");
-});
+// // test route
+// app.get("/api/test", (req, res) => {
+//   res.send("I am responding!");
+// });
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -114,7 +116,5 @@ app.use(function (err, req, res, next) {
   // render the error page
   res.status(500).json({ message: err.message });
 });
-
-
 
 module.exports = app;

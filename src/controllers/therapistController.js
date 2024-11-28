@@ -9,6 +9,7 @@ const emailWithNodemailer = require("../helpers/email");
 const { deleteImage } = require("../helpers/deleteImage");
 const pagination = require("../helpers/pagination");
 const Sheidule = require("../models/Sheidule");
+const { default: mongoose } = require("mongoose");
 
 const apply = async (req, res) => {
   try {
@@ -53,8 +54,8 @@ const apply = async (req, res) => {
     console.log("modifiedResume", modifiedResume);
 
     // Generate OTC (One-Time Code)
-    const oneTimeCode =
-      Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+    //
+    const oneTimeCode = Math.floor(100000 + Math.random() * 900000).toString();
     // Prepare email for activate user
     const emailData = {
       email,
@@ -62,7 +63,7 @@ const apply = async (req, res) => {
       html: `
           <h1>Hello, ${name}</h1>
           <p>Your One Time Code is <h3>${oneTimeCode}</h3> to verify your email</p>
-          <small>This Code is valid for 3 minutes</small>
+          <small>This Code is valid for 24 hours</small>
           `,
     };
 
@@ -105,11 +106,11 @@ const apply = async (req, res) => {
       try {
         therapist.oneTimeCode = null;
         await therapist.save();
-        console.log("oneTimeCode reset to null after 3 minutes");
+        console.log("oneTimeCode reset to null after 24 hours");
       } catch (error) {
         console.error("Error updating oneTimeCode:", error);
       }
-    }, 180000); // 3 minutes in milliseconds
+    }, 86400000); // 24 hours in milliseconds
     res.status(201).json(
       Response({
         message: "Apply as a therapist is successfully",
@@ -128,6 +129,61 @@ const apply = async (req, res) => {
       })
     );
   }
+
+  /*#swagger.tags = ['Therapist']
+    #swagger.description = 'Endpoint to apply as a therapist'
+    ##swagger.opertaionId = 'apply'
+    #swagger.responses[201] = {
+      description: 'Apply as a therapist is successfully',
+      schema: { $ref: "#/definitions/Therapist" }
+    }
+    #swagger.responses[400] = {
+      description: 'Email already exists',
+      schema: { $ref: "#/definitions/ErrorResponse" }
+    }
+    #swagger.responses[500] = {
+      description: 'Internal server error',
+      schema: { $ref: "#/definitions/ErrorResponse" }
+    }
+  */
+};
+
+const verifyCode = async (req, res) => {
+  try {
+    const { email, oneTimeCode } = req.body;
+    const therapist = await Therapist.findOne({
+      email: email,
+      oneTimeCode: oneTimeCode,
+    });
+    if (!therapist) {
+      return res.status(404).json(
+        Response({
+          message: "Therapist not found",
+          status: "Not Found",
+          statusCode: 404,
+        })
+      );
+    }
+    therapist.isVerified = true;
+    await therapist.save();
+    res.status(200).json(
+      Response({
+        message: "Therapist verified successfully",
+        status: "OK",
+        statusCode: 200,
+      })
+    );
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json(
+      Response({
+        message: "Internal server error",
+        status: "Internal Server Error",
+        statusCode: 500,
+      })
+    );
+  }
+  /*#swagger.tags = ['Therapist']*/
 };
 
 //Sign in user
@@ -209,13 +265,12 @@ const signIn = async (req, res, next) => {
       })
     );
   }
+  /*#swagger.tags = ['Therapist']*/
 };
 
 const therapistProfile = async (req, res) => {
-  console.log("req.body.userId", req.body.userId);
   try {
-    const therapist = await Therapist.findById(req.body.userId);
-    console.log("-------------", therapist);
+    const therapist = await Therapist.findById(req.body.therapistId);
     if (!therapist) {
       return res.status(404).json(
         Response({
@@ -243,6 +298,7 @@ const therapistProfile = async (req, res) => {
       })
     );
   }
+  /*#swagger.tags = ['Therapist']*/
 };
 
 const acceptTherapistRequest = async (req, res) => {
@@ -311,10 +367,10 @@ const acceptTherapistRequest = async (req, res) => {
       })
     );
   }
+  /*#swagger.tags = ['Therapist']*/
 };
 
 const getTherapist = async (req, res) => {
-  console.log("get therapist");
   try {
     const limit = parseInt(req.query.limit) || 2; // Default limit is 10, or use the provided limit if any
     const page = parseInt(req.query.page) || 1; // Default page is 1, or use the provided page if any
@@ -345,49 +401,7 @@ const getTherapist = async (req, res) => {
       })
     );
   }
-};
-
-const newTherapistForMessage = async (req, res) => {
-  console.log("fsjdfhksjfh");
-  try {
-    const therapists = await Therapist.find().sort({ createdAt: -1 });
-    console.log(therapists[0]);
-    if (!therapists) {
-      res.status(200).json(
-        Response({
-          message: "No therapist found",
-          statusCode: 404,
-          status: "Not Found",
-        })
-      );
-    }
-    res.status(200).json(
-      Response({
-        data: therapists,
-        message: "Thearapist for welcome message",
-        status: "Okay",
-        statusCode: 200,
-      })
-    );
-  } catch (error) {
-    console.log(error.message);
-    res.status(500).json(Response({ message: "Internal server error" }));
-  }
-};
-
-const getSingleUser = async (req, res) => {
-  try {
-    const { userId } = req.body.userId;
-    const user = await User.findById(userId);
-  } catch (error) {
-    res.status(500).json(
-      Response({
-        message: "Internal Server Error",
-        status: "Internal Server Error",
-        statusCode: "500",
-      })
-    );
-  }
+  /*#swagger.tags = ['Therapist']*/
 };
 
 const updateTherapist = async (req, res) => {
@@ -463,6 +477,7 @@ const updateTherapist = async (req, res) => {
       })
     );
   }
+  /*#swagger.tags = ['Therapist']*/
 };
 
 const therapistRequest = async (req, res) => {
@@ -476,9 +491,10 @@ const therapistRequest = async (req, res) => {
     console.log(error.message);
     res.status(200).json("send");
   }
+  /*#swagger.tags = ['Therapist']*/
 };
 
-const therspistPayment = async (req, res) => {
+const therapistPayment = async (req, res) => {
   try {
     const therspistId = req.params.therapistId;
     const therapistPaymentCount = await Sheidule.find({
@@ -499,19 +515,17 @@ const therspistPayment = async (req, res) => {
   } catch (error) {
     res.status(200).json(Response({ message: "Internal server error" }));
   }
+  /*#swagger.tags = ['Therapist']*/
 };
 
 module.exports = {
+  verifyCode,
   apply,
   acceptTherapistRequest,
   getTherapist,
-  getSingleUser,
-  getSingleUser,
   signIn,
   therapistProfile,
   updateTherapist,
-  newTherapistForMessage,
   therapistRequest,
-  therspistPayment,
-  therspistPayment,
+  therapistPayment,
 };
