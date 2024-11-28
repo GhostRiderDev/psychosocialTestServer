@@ -49,7 +49,7 @@
       "description": "Endpoints relacionados con horarios"
     },
     {
-      "name": "SubscriptionPlan",
+      "name": "Subscription",
       "description": "Endpoints relacionados con planes de suscripción"
     },
     {
@@ -77,16 +77,6 @@
     "application/json"
   ],
   "paths": {
-    "/api/test": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/api/v1/user/sign-up": {
       "post": {
         "tags": [
@@ -1022,7 +1012,10 @@
     },
     "/api/v1/therapist/apply": {
       "post": {
-        "description": "",
+        "tags": [
+          "Therapist"
+        ],
+        "description": "Endpoint to apply as a therapist",
         "parameters": [
           {
             "name": "body",
@@ -1057,10 +1050,55 @@
         ],
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Apply as a therapist is successfully",
+            "schema": {
+              "$ref": "#/definitions/Therapist"
+            }
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Email already exists",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/therapist/verify-code": {
+      "post": {
+        "tags": [
+          "Therapist"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "oneTimeCode": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -1070,6 +1108,9 @@
     },
     "/api/v1/therapist/therapist-profile": {
       "get": {
+        "tags": [
+          "Therapist"
+        ],
         "description": "",
         "parameters": [
           {
@@ -1099,6 +1140,9 @@
     },
     "/api/v1/therapist/action/{therapistId}": {
       "post": {
+        "tags": [
+          "Therapist"
+        ],
         "description": "",
         "parameters": [
           {
@@ -1155,6 +1199,9 @@
     },
     "/api/v1/therapist/all": {
       "get": {
+        "tags": [
+          "Therapist"
+        ],
         "description": "",
         "parameters": [
           {
@@ -1191,6 +1238,9 @@
     },
     "/api/v1/therapist/{therapistId}": {
       "get": {
+        "tags": [
+          "Therapist"
+        ],
         "description": "",
         "parameters": [
           {
@@ -1233,6 +1283,9 @@
     },
     "/api/v1/therapist/sign-in": {
       "post": {
+        "tags": [
+          "Therapist"
+        ],
         "description": "",
         "parameters": [
           {
@@ -1266,6 +1319,9 @@
     },
     "/api/v1/therapist/update": {
       "post": {
+        "tags": [
+          "Therapist"
+        ],
         "description": "",
         "parameters": [
           {
@@ -1329,21 +1385,11 @@
         }
       }
     },
-    "/api/v1/therapist/welcome-message/default": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
     "/api/v1/therapist/applied/therapist": {
       "get": {
+        "tags": [
+          "Therapist"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -1354,6 +1400,9 @@
     },
     "/api/v1/therapist/payment/count/{therspistId}": {
       "get": {
+        "tags": [
+          "Therapist"
+        ],
         "description": "",
         "parameters": [
           {
@@ -1998,7 +2047,10 @@
     },
     "/api/v1/subscription/create-plan": {
       "post": {
-        "description": "",
+        "tags": [
+          "Subscription"
+        ],
+        "description": "Endpoint to create subscription plan",
         "parameters": [
           {
             "name": "body",
@@ -2040,7 +2092,10 @@
     },
     "/api/v1/subscription/get-plan": {
       "get": {
-        "description": "",
+        "tags": [
+          "Subscription"
+        ],
+        "description": "Endpoint to get subscription plans",
         "parameters": [
           {
             "name": "search",
@@ -2060,7 +2115,10 @@
     },
     "/api/v1/subscription/buy-plan/{planId}": {
       "post": {
-        "description": "",
+        "tags": [
+          "Subscription"
+        ],
+        "description": "Endpoint to buy subscription plan",
         "parameters": [
           {
             "name": "planId",
@@ -2119,13 +2177,17 @@
     },
     "/api/v1/message/chat/{participant}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Message"
+        ],
+        "description": "Endpoint to get messages between two users",
         "parameters": [
           {
             "name": "participant",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "The ID of the user to get messages with"
           },
           {
             "name": "authorization",
@@ -2150,7 +2212,10 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Messages retrieved successfully",
+            "schema": {
+              "$ref": "#/definitions/Message"
+            }
           },
           "401": {
             "description": "Unauthorized"
@@ -2159,14 +2224,25 @@
             "description": "Forbidden"
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
-        }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     },
     "/api/v1/message/chat-list": {
       "get": {
-        "description": "",
+        "tags": [
+          "Message"
+        ],
+        "description": "Endpoint to get a list of chats",
         "parameters": [
           {
             "name": "authorization",
@@ -2176,7 +2252,10 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Chats retrieved successfully",
+            "schema": {
+              "$ref": "#/definitions/Chat"
+            }
           },
           "401": {
             "description": "Unauthorized"
@@ -2185,17 +2264,28 @@
             "description": "Forbidden"
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
-        }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     },
     "/api/v1/message/file": {
       "post": {
-        "description": "",
+        "tags": [
+          "Message"
+        ],
+        "description": "Endpoint to send a file message",
         "parameters": [
           {
-            "name": "body",
+            "name": "senderId",
             "in": "body",
             "schema": {
               "type": "object",
@@ -2213,17 +2303,70 @@
                   "example": "any"
                 }
               }
+            },
+            "description": "The ID of the sender",
+            "required": true
+          },
+          {
+            "name": "participant",
+            "in": "body",
+            "description": "The ID of the participant",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          {
+            "name": "message",
+            "in": "body",
+            "description": "The message to send",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          {
+            "name": "messageType",
+            "in": "body",
+            "description": "The type of message to send",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          {
+            "name": "file",
+            "in": "body",
+            "description": "The file to send",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {}
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Message sent successfully",
+            "schema": {
+              "$ref": "#/definitions/Message"
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
-        }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     },
     "/api/v1/rating/create/{therapistId}": {

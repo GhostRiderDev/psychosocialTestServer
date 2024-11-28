@@ -8,7 +8,11 @@ const logger = require("morgan");
 const port = process.env.PORT || 3000;
 
 const server = createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
 connectToDatabase();
 // Socket server
 socketIO(io);

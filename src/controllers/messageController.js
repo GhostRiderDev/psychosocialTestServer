@@ -16,10 +16,6 @@ const getCurrentTime = () => {
 
 //Save message to database
 const saveMessage = (msg) => {
-  // console.log("hiiiiiiiii", msg)
-  // if (!msg.message) {
-  //     return;
-  // }
   const saveMessage = Message.create({
     message: msg.message,
     senderId: msg.senderId,
@@ -88,18 +84,26 @@ const getUserSpecificChat = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+  /*#swagger.tags = ['Message']
+    #swagger.description = 'Endpoint to get messages between two users'
+  #swagger.parameters['participant'] = {
+          in: 'path',
+          description: 'The ID of the user to get messages with',
+          required: true,
+          type: 'string'
+      }
+  #swagger.responses[200] = {
+          description: 'Messages retrieved successfully',
+          schema: { $ref: "#/definitions/Message" }
+      }
+  #swagger.responses[500] = {
+          description: 'Server Error',
+          schema: { $ref: "#/definitions/Error" }
+      }
+  #swagger.security = [{
+          "apiKeyAuth": []
+      }]*/
 };
-
-// const getUserSpecificChat = async (req, res) => {
-//     try {
-//         const chatId = req.params.participant;
-//         console.log(chatId)
-//         const specificChat = await Message.find({ chatId: chatId });
-//         res.status(200).json(Response({ message: "Your chat retrieve succesfuly", data: specificChat }))
-//     } catch (error) {
-//         res.status(500).json({ message: error.message });
-//     }
-// };
 
 const getChatList = async (req, res) => {
   try {
@@ -139,14 +143,19 @@ const getChatList = async (req, res) => {
           (msg) => msg._id.toString() === chat._id.toString()
         );
         let participant;
+        console.log("chatMessagesObj: ->>>>", chat.senderId, senderId);
         if (chat.senderId.toString() === senderId) {
           participant = chat.participant;
+          console.log("**: ->>>>", chat.senderId, senderId);
         } else {
           participant = chat.senderId;
+          console.log("^^: ->>>>", chat.senderId, senderId);
         }
         const participantDetails =
           (await User.findById(participant)) ||
           (await Therapist.findById(participant));
+
+        console.log("participantDetails: ->>>>", participant, req.body.userId);
         return {
           chat: chat,
           participantDetails: participantDetails,
@@ -161,6 +170,19 @@ const getChatList = async (req, res) => {
     console.log(error.message);
     res.status(500).json({ message: error.message });
   }
+  /*#swagger.tags = ['Message']
+    #swagger.description = 'Endpoint to get a list of chats'
+  #swagger.responses[200] = {
+          description: 'Chats retrieved successfully',
+          schema: { $ref: "#/definitions/Chat" }
+      }
+  #swagger.responses[500] = {
+          description: 'Server Error',
+          schema: { $ref: "#/definitions/Error" }
+      }
+  #swagger.security = [{
+          "apiKeyAuth": []
+      }]*/
 };
 
 const fileMessage = async (req, res) => {
@@ -222,6 +244,49 @@ const fileMessage = async (req, res) => {
     console.error(error.message);
     return res.status(500).json({ error: "Internal server error" });
   }
+  /*#swagger.tags = ['Message']
+    #swagger.description = 'Endpoint to send a file message'
+  #swagger.parameters['senderId'] = {
+          in: 'body',
+          description: 'The ID of the sender',
+          required: true,
+          type: 'string'
+      }
+  #swagger.parameters['participant'] = {
+          in: 'body',
+          description: 'The ID of the participant',
+          required: true,
+          type: 'string'
+      }
+  #swagger.parameters['message'] = {
+          in: 'body',
+          description: 'The message to send',
+          required: false,
+          type: 'string'
+      }
+  #swagger.parameters['messageType'] = {
+          in: 'body',
+          description: 'The type of message to send',
+          required: true,
+          type: 'string'
+      }
+  #swagger.parameters['file'] = {
+          in: 'body',
+          description: 'The file to send',
+          required: false,
+          type: 'file'
+      }
+  #swagger.responses[200] = {
+          description: 'Message sent successfully',
+          schema: { $ref: "#/definitions/Message" }
+      }
+  #swagger.responses[500] = {
+          description: 'Server Error',
+          schema: { $ref: "#/definitions/Error" }
+      }
+  #swagger.security = [{
+          "apiKeyAuth": []
+      }]*/
 };
 
 module.exports = {
