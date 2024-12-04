@@ -1,13 +1,22 @@
 const pagination = require("../helpers/pagination");
 const Response = require("../helpers/response");
-const Apointment = require("../models/Apointment");
 const Package = require("../models/Package");
 const Sheidule = require("../models/Sheidule");
 const User = require("../models/User");
+const TimeSheidule = require("../models/TimeSceidule");
+const Therapist = require("../models/Therapist");
+const Appointment = require("../models/Apointment");
+const SubscriptionPlan = require("../models/SubsCriptionPlan");
+const dayjs = require("dayjs");
+const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 
 const getApointment = async (req, res) => {
-  const { packageId, date, time } = req.body;
-  const package = await Package.findById(packageId);
+  const { packageId, date, time, therapistId } = req.body;
+  console.log("Package ID:", packageId);
+  console.log("Date:", date);
+  console.log("Time:", time);
+  const package = await SubscriptionPlan.findById(packageId);
   if (!package) {
     res.status(404).json(
       Response({
@@ -30,11 +39,26 @@ const getApointment = async (req, res) => {
       })
     );
   }
-  const apointment = await Apointment.create({
+
+  const therapist = await Therapist.findById(therapistId);
+  if (!therapist) {
+    res.status(404).json(
+      Response({
+        message: "Therapist not found",
+        type: "Therapist",
+        status: "Not Found",
+        statusCode: 404,
+      })
+    );
+    return;
+  }
+
+  const apointment = await Appointment.create({
     userId: checkUser._id,
     packageId,
     date,
     time,
+    therapistId,
   });
 
   res.status(200).json(
@@ -91,13 +115,13 @@ const assignTherapist = async (req, res) => {
 
 const myAssignedList = async (req, res) => {
   try {
-    const userId = req.body.userId;
-    const myAssignment = await Apointment.findOne({
-      $or: [{ userId: userId }, { therapistId: userId }],
+    const userId = new ObjectId(req.params.userId);
+
+    const myAssignment = await Appointment.find({
+      userId: userId,
     })
       .populate("userId")
-      .populate("therapistId")
-      .populate("scheduleId");
+      .populate("therapistId");
 
     console.log(myAssignment);
     res.status(200).json(
@@ -128,7 +152,7 @@ const userApointmentHistory = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const page = parseInt(req.query.page) || 1;
     const date = req.query.date;
-    const userId = req.body.userId;
+    const userId = req.query.userId;
 
     // Log userId for debugging
     console.log("User ID:", userId);
@@ -171,11 +195,12 @@ const userApointmentHistory = async (req, res) => {
     }
 
     // Fetch appointments with pagination
-    const appointments = await Sheidule.find(query)
+    const appointments = await Appointment.find(query)
       .populate("therapistId")
       .populate("userId")
       .skip(skip)
       .limit(limit);
+    console.log(appointments);
 
     // Check if appointments were found
     if (!appointments || appointments.length === 0) {
@@ -213,9 +238,138 @@ const userApointmentHistory = async (req, res) => {
   }
 };
 
+// Controller
+const getAvailableTimesByDate = async (req, res) => {
+  try {
+    const { date } = req.body;
+
+    if (!date) {
+      return res.status(400).json(
+        Response({
+          message: "Date is required",
+          statusCode: 400,
+          status: "Bad Request",
+        })
+      );
+    }
+
+    const day = dayjs(date).format("dddd");
+
+    if (day === "Sunday" || day === "Saturday") {
+      return res.status(200).json(
+        Response({
+          message: "No available slots on weekends",
+          statusCode: 200,
+          status: "OK",
+        })
+      );
+    }
+    const therapists = await Therapist.find({
+      accepted: true,
+      isBlocked: false,
+    });
+
+    const slots = [];
+
+    const allAppointmentsToday = await Sheidule.find({ date });
+    // Generate slots for each therapist
+    for (const therapist of therapists) {
+      const existingAppointments = allAppointmentsToday.filter(
+        (apt) => apt.therapistId.toString() === therapist._id.toString()
+      );
+
+      // Convert existing appointment times to a Set for faster lookup
+      const bookedTimes = new Set(
+        existingAppointments
+          .map((apt) => {
+            // If appointment is 60 minutes, block both 30 minute slots
+            if (apt.duration === 60) {
+              const hour = apt.time.split(":")[0];
+              return [`${hour}:00`, `${hour}:30`];
+            }
+            return apt.time;
+          })
+          .flat()
+      );
+
+      // Generate 30-minute slots
+      for (let hour = 8; hour < 18; hour++) {
+        if (hour === 12) continue; // Skip lunch hour
+
+        // Skip past hours if date is today
+        if (
+          dayjs(date).format("YYYY-MM-DD") === dayjs().format("YYYY-MM-DD") &&
+          hour < dayjs().hour()
+        ) {
+          continue;
+        }
+
+        const hour24 = hour.toString().padStart(2, "0");
+
+        // Check 30-minute slots
+        if (!bookedTimes.has(`${hour24}:00`)) {
+          slots.push({
+            therapistId: therapist._id,
+            date,
+            time: `${hour24}:00`,
+            duration: 30,
+            isAvailable: true,
+          });
+        }
+
+        if (!bookedTimes.has(`${hour24}:30`)) {
+          slots.push({
+            therapistId: therapist._id,
+            date,
+            time: `${hour24}:30`,
+            duration: 30,
+            isAvailable: true,
+          });
+        }
+
+        // Check 60-minute slot (only if both 30-min slots are free)
+        if (
+          !bookedTimes.has(`${hour24}:00`) &&
+          !bookedTimes.has(`${hour24}:30`)
+        ) {
+          slots.push({
+            therapistId: therapist._id,
+            date,
+            time: `${hour24}:00`,
+            duration: 60,
+            isAvailable: true,
+          });
+        }
+      }
+    }
+
+    // Save all slots
+    await TimeSheidule.insertMany(slots);
+
+    res.status(200).json(
+      Response({
+        message: "Time slots generated successfully",
+        data: slots,
+        statusCode: 200,
+        status: "OK",
+      })
+    );
+  } catch (error) {
+    console.error("Error generating time slots:", error);
+    res.status(500).json(
+      Response({
+        message: "Error generating time slots",
+        statusCode: 500,
+        status: "Error",
+      })
+    );
+  }
+};
+
 module.exports = {
   getApointment,
   // assignDoctor,
+  getAvailableTimesByDate,
   assignTherapist,
   myAssignedList,
   userApointmentHistory,
